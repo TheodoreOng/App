@@ -1,4 +1,4 @@
-import cv2
+import Cv2
 import numpy as np
 import utils
 import io
