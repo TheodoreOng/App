@@ -1,5 +1,3 @@
-import openvino as ov
-import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -100,5 +98,4 @@ def predict_image(image, conf_threshold):
     visualize_image = draw_age_gender_emotion(face_boxes, image, input_layer_ag)
     
     return visualize_image
-    
 
