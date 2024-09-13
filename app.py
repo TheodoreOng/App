@@ -27,8 +27,6 @@ def play_live_camera():
     visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold)
     st.image(visualized_image, channels = "BGR")
     
-if source_radio == "WEBCAM":
-    play_live_camera()
 
 st.set_page_config(
     page_title="Age/Gender/Emotion",
