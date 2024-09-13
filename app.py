@@ -23,4 +23,3 @@ uploaded_image_cv = cv2.cvtColor(numpy.array(uploaded_image), cv2.COLOR_RGB2BGR)
 visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold = conf_threshold)
 
 st.image(visualized_image, channels = "BGR")
-
