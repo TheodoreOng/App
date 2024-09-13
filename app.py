@@ -73,9 +73,8 @@ elif source_radio == 'VIDEO':
         st.video('assets/sample_video.mp4')
         st.write("Click on 'Browse Files' in the sidebar to run inference on a video.")
 
-elif source_radio == 'WEBCAM':
-    st.write("Attempting to play video from webcam")
-    play_video(0)  # Make sure play_video handles webcam input properly
+if source_radio == "WEBCAM":
+    play_live_camera()  # Make sure play_video handles webcam input properly
 
 
 
