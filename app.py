@@ -35,9 +35,11 @@ elif source_radio == 'VIDEO':
     input = st.sidebar.file_uploader('Choose a video.', type=("mp4"))
 
     if input is not None:
+        g=io.BytesSIO(input.read())
         temporary_location = 'upload.mp4'
+        
         with open(temporary_location, 'wb') as out:
-            out.write(input.read())  # Write file content once
+            out.write(g.read())  # Write file content once
 
         st.write(f"Attempting to play video from {temporary_location}")
         play_video(temporary_location)
