@@ -1,54 +1,26 @@
 import streamlit as st
 import PIL
 import cv2
-import numpy as np
+import numpy
 import utils
-import io
-
+from camera_input_live import camera_input_live
+ 
 st.set_page_config(
-    page_title="Age/Gender/Emotion",
+    page_title="Openvino Mutlimodal Demo: Age/Gender/Emotion",
     page_icon=":sun_with_face:",
-    layout="centered",
-    initial_sidebar_state="expanded",
-)
+    layout="wide")
 
-st.title('Age/Gender/Emotion :sun_with_face:')
+st.title("Openvino Mutlimodal Demo: Age/Gender/Emotion :sun_with_face:")
+st.markdown('### Using three models: \n 1. face-detection-adas-0001 \n 2. emotions-recognition-retail-0003 \n 3. age-gender-recognition-retail-0013')
 
-st.sidebar.header('Type')
-source_radio = st.sidebar.radio('Select Source', ['IMAGE', 'VIDEO', 'WEBCAM'])
+input = None 
+conf_threshold = float(20)/100 # confidence in float => 20% = 0.2
 
-if source_radio == 'IMAGE':
-    st.sidebar.header('Upload')
-    input = st.sidebar.file_uploader('Choose an image.', type=("jpg", "png"))
+image = camera_input_live()
 
-    if input is not None:
-        uploaded_image = PIL.Image.open(input)
-        uploaded_image_cv = cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
-        visualized_image = utils.predict_image(uploaded_image_cv)
-        st.image(visualized_image, channels='BGR')
-    else:
-        st.image('assets/sample_image.jpg')
-        st.write("Click on 'Browse Files' in the sidebar to run inference on an image.")
+uploaded_image = PIL.Image.open(image)
+uploaded_image_cv = cv2.cvtColor(numpy.array(uploaded_image), cv2.COLOR_RGB2BGR)
+visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold = conf_threshold)
 
-elif source_radio == 'VIDEO':
-    st.sidebar.header('Upload')
-    input = st.sidebar.file_uploader('Choose a video.', type=("mp4"))
-
-    if input is not None:
-        g=io.BytesSIO(input.read())
-        temporary_location = 'upload.mp4'
-        
-        with open(temporary_location, 'wb') as out:
-            out.write(g.read())  # Write file content once
-
-        st.write(f"Attempting to play video from {temporary_location}")
-        play_video(temporary_location)
-    else:
-        st.video('assets/sample_video.mp4')
-        st.write("Click on 'Browse Files' in the sidebar to run inference on a video.")
-
-elif source_radio == 'WEBCAM':
-    st.write("Attempting to play video from webcam")
-    play_video(0)  # Make sure play_video handles webcam input properly
-
+st.image(visualized_image, channels = "BGR")
 
