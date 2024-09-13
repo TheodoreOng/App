@@ -15,7 +15,7 @@ def play_video(video_source):
         ret, frame = camera.read()
         if ret:
             visualized_image = utils.predict_image(frame, conf_threshold)
-            st_frame.image(visualized_image, channels = "BGR")
+            st_frame.image(visualized_image)
         else:
             camera.release()
             break
