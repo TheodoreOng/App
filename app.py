@@ -38,7 +38,7 @@ conf_threshold = float(st.sidebar.slider ("Select the Confidence Threshold", 10,
 if source_radio == 'IMAGE':
     st.sidebar.header('Upload')
     input = st.sidebar.file_uploader('Choose an image.', type=("jpg", "png"))
-
+    image=camera_input_live()
     if input is not None:
         uploaded_image = PIL.Image.open(input)
         uploaded_image_cv = cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
@@ -62,6 +62,8 @@ elif source_radio == 'VIDEO':
     else:
         st.video('assets/sample_video.mp4')
         st.write("Click on 'Browse Files' in the sidebar to run inference on a video.")
+
+image=camera_input_live()
 
 elif source_radio == 'WEBCAM':
     st.write("Attempting to play video from webcam")
