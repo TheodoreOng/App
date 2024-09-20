@@ -70,5 +70,3 @@ elif source_radio == 'WEBCAM':
 
 
 
-
-
