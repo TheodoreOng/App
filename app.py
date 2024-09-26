@@ -71,3 +71,4 @@ def play_live_camera():
 
 if source_radio == "WEBCAM":
     play_live_camera()
+
