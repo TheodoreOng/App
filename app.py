@@ -10,9 +10,10 @@ from camera_input_live import camera_input_live
 def play_video(video_source):
     camera = cv2.VideoCapture(video_source)
     st_frame = st.empty()
-    
+
     while camera.isOpened():
         ret, frame = camera.read()
+
         if ret:
             visualized_image = utils.predict_image(frame, conf_threshold)
             st_frame.image(visualized_image, channels="BGR")
@@ -30,7 +31,6 @@ st.set_page_config(
 st.title("Fire/smoke-detection Project 🔥")
 source_radio = st.sidebar.radio("Select Source", ["IMAGE", "VIDEO", "WEBCAM"])
 
-# Sidebar for confidence threshold
 st.sidebar.header("Confidence")
 conf_threshold = float(st.sidebar.slider("Select the Confidence Threshold", 10, 100, 20)) / 100
 
@@ -42,7 +42,7 @@ if source_radio == "IMAGE":
     if input is not None:
         uploaded_image = PIL.Image.open(input)
         uploaded_image_cv = cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
-        visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold)
+        visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold=conf_threshold)
         st.image(visualized_image, channels="BGR")
 
 temporary_location = None
@@ -56,11 +56,11 @@ if source_radio == "VIDEO":
 
         with open(temporary_location, "wb") as out:
             out.write(g.read())
-
-    if temporary_location is not None:
-        play_video(temporary_location)
-        if st.button("Replay", type="primary"):
-            play_video(temporary_location)  # Call the function again to replay
+        
+        if temporary_location is not None:
+            play_video(temporary_location)
+            if st.button("Replay", type="primary"):
+                play_video(temporary_location)  # Call play_video again for replay
 
 def play_live_camera():
     image = camera_input_live()
@@ -71,4 +71,5 @@ def play_live_camera():
 
 if source_radio == "WEBCAM":
     play_live_camera()
+
 
