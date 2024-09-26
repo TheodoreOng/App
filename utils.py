@@ -1,6 +1,6 @@
 import openvino as ov
 import cv2
-import numpy as np
+import numpy 
 import glob
 import time  # Import time for timing inference
 from ultralytics.utils.plotting import colors
