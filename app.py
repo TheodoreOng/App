@@ -1,9 +1,10 @@
 import streamlit as st
-import PIL
-import cv2
-import numpy
 import utils
+import cv2
+import numpy as np
 import io
+import PIL
+from PIL import Image
 from camera_input_live import camera_input_live
 
 def play_video(video_source):
@@ -16,52 +17,38 @@ def play_video(video_source):
         if ret:
             visualized_image = utils.predict_image(frame, conf_threshold)
             st_frame.image(visualized_image, channels = "BGR")
-
         else:
             camera.release()
             break
-def play_live_camera():
-    image = camera_input_live()
-    uploaded_image = PIL.Image.open(image)
-    uploaded_image_cv = cv2.cvtColor(numpy.array(uploaded_image), cv2.COLOR_RGB2BGR)
-    visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold)
-    st.image(visualized_image, channels = "BGR")
-        
 
 st.set_page_config(
-    page_title="Age/Gender/Emotion",
-    page_icon=":sun_with_face:",
+    page_title="Fire/smoke-detection",
+    page_icon="🔥",
     layout="centered",
     initial_sidebar_state="expanded")
 
-
-st.title("Age/Gender/Emotion :sun_with_face:")
-
-st.sidebar.header("Type")
-source_radio = st.sidebar.radio("Select Source",["IMAGE", "VIDEO", "WEBCAM"])
+st.title("Fire/smoke-detection Project 🔥")
+source_radio = st.sidebar.radio("Select Source",["IMAGE","VIDEO","WEBCAM"])
 
 st.sidebar.header("Confidence")
-conf_threshold = float(st.sidebar.slider("Select the Confidence Threshold", 10,10,100,20))/100
+conf_threshold = float(st.sidebar.slider("Select the Confidence Threshold", 10, 100, 20))/100
 
 input = None
 if source_radio == "IMAGE":
     st.sidebar.header("Upload")
-    input = st.sidebar.file_uploader("Choose an image", type=("jpg","png"))
-if input is not None:
-    uploaded_image = PIL.Image.open(input)
-    uploaded_image_cv = cv2.cvtColor(numpy.array(uploaded_image), cv2.COLOR_RGB2BGR)
-    visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold = conf_threshold)
+    input = st.sidebar.file_uploader("Choose an image.", type=("jpg","png"))
     
-    st.image(visualized_image, channels ="BGR")
+    if input is not None:
+        uploaded_image = PIL.Image.open(input)
+        uploaded_image_cv =cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
+        visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold = conf_threshold)
+        st.image(visualized_image, channels = "BGR")
 
-else:
-    st.image("assets/sample_image.jpg")
-    st.write("Click on 'Browse Files' in the sidebar to run inference on an image.")
 
 temporary_location = None
 if source_radio == "VIDEO":
     st.sidebar.header("Upload")
-    input = st.sidebar.file_uploader("Choose an video", type=("mp4"))
+    input = st.sidebar.file_uploader("Choose an video.", type=("mp4"))
 
     if input is not None:
         g = io.BytesIO(input.read())
@@ -71,15 +58,18 @@ if source_radio == "VIDEO":
             out.write(g.read())
 
         out.close()
-
     if temporary_location is not None:
         play_video(temporary_location)
         if st.button("Replay", type="primary"):
             pass
-    else:
-        st.video("assets/sample_video.mp4")
-        st.write("Click on 'Browse Files' in the sidebar to run inference on an video.")
 
+
+def play_live_camera():
+    image = camera_input_live()
+    uploaded_image = PIL.Image.open(image)
+    uploaded_image_cv = cv2.cvtColor(np.array(uploaded_image), cv2.COLOR_RGB2BGR)
+    visualized_image = utils.predict_image(uploaded_image_cv, conf_threshold)
+    st.image(visualized_image, channels = "BGR")
 
 if source_radio == "WEBCAM":
     play_live_camera()
